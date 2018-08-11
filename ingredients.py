@@ -6,8 +6,6 @@ from sklearn.ensemble import RandomForestClassifier
 with open('klikk-recipes.json') as f:
 	data = json.load(f)
 
-train, test = train_test_split(data, train_size = 0.9)
-
 lst = []
 ingreds = {}
 count = 0
@@ -38,7 +36,7 @@ for recipe in data:
 	formattedx.append(line)
 	formattedy.append(countries[recipe['country']])
 
-Xtrain, Xtest, ytrain, ytest = train_test_split(formattedx, formattedy)
+Xtrain, Xtest, ytrain, ytest = train_test_split(formattedx, formattedy, train_size = 0.9)
 
 LR = LogisticRegression()
 LR.fit(Xtrain, ytrain)
