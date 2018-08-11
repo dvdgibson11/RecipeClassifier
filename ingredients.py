@@ -6,14 +6,18 @@ from sklearn.ensemble import RandomForestClassifier
 with open('klikk-recipes.json') as f:
 	data = json.load(f)
 
+# minimum number of recipe ingredients
+ingredscutoff = 3
+
 lst = []
 ingreds = {}
 count = 0
 countries = {}
 countrycount = 0
 
+# map each ingredient and country to a number for later binary encoding
 for recipe in data:
-	if len(recipe['ingredients']) == 0 or 'country' not in recipe:
+	if len(recipe['ingredients']) < ingredscutoff or 'country' not in recipe:
 		continue
 	for ingred in recipe['ingredients']:
 		if ingred not in ingreds:
@@ -23,12 +27,11 @@ for recipe in data:
 			countries[recipe['country']] = countrycount
 			countrycount += 1
 
-
+# perform actual binary encoding of the data
 formattedx = []
 formattedy = []
-
 for recipe in data:
-	if len(recipe['ingredients']) == 0 or 'country' not in recipe:
+	if len(recipe['ingredients']) < ingredscutoff or 'country' not in recipe:
 		continue
 	line = [0] * count
 	for ingred in recipe['ingredients']:
@@ -36,7 +39,7 @@ for recipe in data:
 	formattedx.append(line)
 	formattedy.append(countries[recipe['country']])
 
-Xtrain, Xtest, ytrain, ytest = train_test_split(formattedx, formattedy, train_size = 0.9)
+Xtrain, Xtest, ytrain, ytest = train_test_split(formattedx, formattedy, train_size = 0.8)
 
 LR = LogisticRegression()
 LR.fit(Xtrain, ytrain)
